@@ -1,0 +1,706 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点点吧</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            /* background: radial-gradient(200% 100% at bottom center, #b8e1fc 0%, #c2e0f5 20%, #e0c3e8 55%, #f5cdbb 85%, #ffe6b0);
+            background: radial-gradient(220% 105% at top center, #1b2947 10%, #75517d 40%, #e96f92 65%, #f7f7b6); */
+            background: radial-gradient(220% 105% at top center, #92b3c9 10%, #d998e8 40%, #e96f92 65%, #f7f7b6);
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(0);
+            }
+
+            100% {
+                transform: perspective(400px) rotateZ(20deg) rotateX(-40deg) rotateY(-360deg);
+            }
+        }
+
+        #stars {
+            transform: perspective(500px);
+            transform-style: preserve-3d;
+            position: fixed;
+            perspective-origin: 50% 100%;
+            left: 50%;
+            animation: rotate 66s infinite linear;
+            bottom: 0;
+            z-index: -99;
+        }
+
+        .star {
+            width: 2px;
+            height: 2px;
+            background: #f7f7b8;
+            position: fixed;
+            top: 0px;
+            left: 0;
+            backface-visibility: hidden;
+        }
+        
+        .message-center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            max-width: 800px;
+            pointer-events: none;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .message {
+            position: absolute;
+            padding: 10px 0;
+            pointer-events: none;
+            opacity: 0;
+            text-align: center;
+            width: 100%;
+            transition: opacity 0.3s ease, transform 0.5s ease;
+        }
+        
+        .message-content {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.4;
+            text-shadow: 0 5px 20px rgba(0, 0, 0, 0.8);
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            display: inline-block;
+            max-width: 90%;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        .message-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        @keyframes messageAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes messageDisappear {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+        }
+        
+        .message.appear {
+            animation: messageAppear 0.5s ease-out forwards;
+        }
+        
+        .message.disappear {
+            animation: messageDisappear 0.5s ease-out forwards;
+        }
+        
+        @media (max-width: 768px) {
+            .message-content {
+                font-size: 2.2rem;
+            }
+            
+            .message-icon {
+                font-size: 3rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .message-content {
+                font-size: 1.8rem;
+            }
+            
+            .message-icon {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+    <style>
+        html,body{height:100%;margin:0;padding:0}
+        ul,li{text-indent:0;text-decoration:none;margin:0;padding:0}
+        img{border:0}
+        canvas{cursor:crosshair;display:block;left:0;position:absolute;top:0;z-index:20}
+    </style>
+</head>
+
+<body>
+    <div id="stars">
+        
+    </div>
+    <canvas id="extraFireworksCanvas" class="extra-fireworks-canvas"></canvas>
+    <!-- 音乐播放控件 (默认自动尝试播放，并显示状态) -->
+    <div class="music-player" id="musicControl">
+        <i class="fas fa-music music-icon" id="musicIcon"></i>
+        <span class="music-text"> </span>
+        <span class="music-status" id="musicStatus"> </span>
+    </div>
+    <script>
+        (function () {
+            let starsCount = 800;
+            let distance = 800;
+            let parentStarts = document.getElementById("stars");
+            for (let i = 0; i < starsCount; i++) {
+                let childStart = document.createElement("div");
+                childStart.setAttribute("class", 'star');
+                parentStarts.appendChild(childStart);
+            }
+            for (let i = 0; i < starsCount; i++) {
+                let item = parentStarts.children[i];
+                let speed = 0.2 + (Math.random() * 1);
+                let thisDistance = distance + (Math.random() * 300);
+                item.style.transformOrigin = "0 0 " + thisDistance + "px";
+                item.style.transform = "translate3d(0,0,-" + thisDistance + "px) rotateY(" + (Math.random() * 360) + "deg) rotateX(" + (Math.random() * -50) + "deg) scale(" + speed + "," + speed + ")";
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+
+<script type="text/javascript">
+$(function(){
+var Fireworks = function(){
+var self = this;
+var rand = function(rMi, rMa){return ~~((Math.random()*(rMa-rMi+1))+rMi);}
+var hitTest = function(x1, y1, w1, h1, x2, y2, w2, h2){return !(x1 + w1 < x2 || x2 + w2 < x1 || y1 + h1 < y2 || y2 + h2 < y1);};
+window.requestAnimFrame=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(a){window.setTimeout(a,1E3/60)}}();
+
+self.init = function(){ 
+self.canvas = document.createElement('canvas');             
+self.canvas.width = self.cw = $(window).innerWidth();
+self.canvas.height = self.ch = $(window).innerHeight();         
+self.particles = [];    
+self.partCount = 150;
+self.fireworks = [];    
+self.mx = self.cw/2;
+self.my = self.ch/2;
+self.currentHue = 30;
+self.partSpeed = 5;
+self.partSpeedVariance = 10;
+self.partWind = 50;
+self.partFriction = 5;
+self.partGravity = 1;
+self.hueMin = 0;
+self.hueMax = 360;
+self.fworkSpeed = 4;
+self.fworkAccel = 10;
+self.hueVariance = 30;
+self.flickerDensity = 25;
+self.showShockwave = true;
+self.showTarget = false;
+self.clearAlpha = 25;
+
+$(document.body).append(self.canvas);
+self.ctx = self.canvas.getContext('2d');
+self.ctx.lineCap = 'round';
+self.ctx.lineJoin = 'round';
+self.lineWidth = 1;
+self.bindEvents();          
+self.canvasLoop();
+
+self.canvas.onselectstart = function() {
+return false;
+};
+};      
+
+self.createParticles = function(x,y, hue){
+var countdown = self.partCount;
+while(countdown--){
+var newParticle = {
+    x: x,
+    y: y,
+    coordLast: [
+        {x: x, y: y},
+        {x: x, y: y},
+        {x: x, y: y}
+    ],
+    angle: rand(0, 360),
+    speed: rand(((self.partSpeed - self.partSpeedVariance) <= 0) ? 1 : self.partSpeed - self.partSpeedVariance, (self.partSpeed + self.partSpeedVariance)),
+    friction: 1 - self.partFriction/100,
+    gravity: self.partGravity/2,
+    hue: rand(hue-self.hueVariance, hue+self.hueVariance),
+    brightness: rand(50, 80),
+    alpha: rand(40,100)/100,
+    decay: rand(10, 50)/1000,
+    wind: (rand(0, self.partWind) - (self.partWind/2))/25,
+    lineWidth: self.lineWidth
+};              
+self.particles.push(newParticle);
+}
+};
+
+
+self.updateParticles = function(){
+var i = self.particles.length;
+while(i--){
+var p = self.particles[i];
+var radians = p.angle * Math.PI / 180;
+var vx = Math.cos(radians) * p.speed;
+var vy = Math.sin(radians) * p.speed;
+p.speed *= p.friction;
+                
+p.coordLast[2].x = p.coordLast[1].x;
+p.coordLast[2].y = p.coordLast[1].y;
+p.coordLast[1].x = p.coordLast[0].x;
+p.coordLast[1].y = p.coordLast[0].y;
+p.coordLast[0].x = p.x;
+p.coordLast[0].y = p.y;
+
+p.x += vx;
+p.y += vy;
+p.y += p.gravity;
+
+p.angle += p.wind;              
+p.alpha -= p.decay;
+
+if(!hitTest(0,0,self.cw,self.ch,p.x-p.radius, p.y-p.radius, p.radius*2, p.radius*2) || p.alpha < .05){                  
+    self.particles.splice(i, 1);    
+}
+};
+};
+
+self.drawParticles = function(){
+var i = self.particles.length;
+while(i--){
+var p = self.particles[i];                          
+
+var coordRand = (rand(1,3)-1);
+self.ctx.beginPath();                               
+self.ctx.moveTo(Math.round(p.coordLast[coordRand].x), Math.round(p.coordLast[coordRand].y));
+self.ctx.lineTo(Math.round(p.x), Math.round(p.y));
+self.ctx.closePath();               
+self.ctx.strokeStyle = 'hsla('+p.hue+', 100%, '+p.brightness+'%, '+p.alpha+')';
+self.ctx.stroke();              
+
+if(self.flickerDensity > 0){
+    var inverseDensity = 50 - self.flickerDensity;                  
+    if(rand(0, inverseDensity) === inverseDensity){
+        self.ctx.beginPath();
+        self.ctx.arc(Math.round(p.x), Math.round(p.y), rand(p.lineWidth,p.lineWidth+3)/2, 0, Math.PI*2, false)
+        self.ctx.closePath();
+        var randAlpha = rand(50,100)/100;
+        self.ctx.fillStyle = 'hsla('+p.hue+', 100%, '+p.brightness+'%, '+randAlpha+')';
+        self.ctx.fill();
+    }   
+}
+};
+};
+
+
+self.createFireworks = function(startX, startY, targetX, targetY){
+var newFirework = {
+x: startX,
+y: startY,
+startX: startX,
+startY: startY,
+hitX: false,
+hitY: false,
+coordLast: [
+    {x: startX, y: startY},
+    {x: startX, y: startY},
+    {x: startX, y: startY}
+],
+targetX: targetX,
+targetY: targetY,
+speed: self.fworkSpeed,
+angle: Math.atan2(targetY - startY, targetX - startX),
+shockwaveAngle: Math.atan2(targetY - startY, targetX - startX)+(90*(Math.PI/180)),
+acceleration: self.fworkAccel/100,
+hue: self.currentHue,
+brightness: rand(50, 80),
+alpha: rand(50,100)/100,
+lineWidth: self.lineWidth
+};          
+self.fireworks.push(newFirework);
+
+};
+
+
+self.updateFireworks = function(){
+var i = self.fireworks.length;
+
+while(i--){
+var f = self.fireworks[i];
+self.ctx.lineWidth = f.lineWidth;
+
+vx = Math.cos(f.angle) * f.speed,
+vy = Math.sin(f.angle) * f.speed;
+f.speed *= 1 + f.acceleration;              
+f.coordLast[2].x = f.coordLast[1].x;
+f.coordLast[2].y = f.coordLast[1].y;
+f.coordLast[1].x = f.coordLast[0].x;
+f.coordLast[1].y = f.coordLast[0].y;
+f.coordLast[0].x = f.x;
+f.coordLast[0].y = f.y;
+
+if(f.startX >= f.targetX){
+    if(f.x + vx <= f.targetX){
+        f.x = f.targetX;
+        f.hitX = true;
+    } else {
+        f.x += vx;
+    }
+} else {
+    if(f.x + vx >= f.targetX){
+        f.x = f.targetX;
+        f.hitX = true;
+    } else {
+        f.x += vx;
+    }
+}
+
+if(f.startY >= f.targetY){
+    if(f.y + vy <= f.targetY){
+        f.y = f.targetY;
+        f.hitY = true;
+    } else {
+        f.y += vy;
+    }
+} else {
+    if(f.y + vy >= f.targetY){
+        f.y = f.targetY;
+        f.hitY = true;
+    } else {
+        f.y += vy;
+    }
+}               
+
+if(f.hitX && f.hitY){
+    self.createParticles(f.targetX, f.targetY, f.hue);
+    self.fireworks.splice(i, 1);
+    
+}
+};
+};
+
+self.drawFireworks = function(){
+var i = self.fireworks.length;
+self.ctx.globalCompositeOperation = 'lighter';
+while(i--){
+var f = self.fireworks[i];      
+self.ctx.lineWidth = f.lineWidth;
+
+var coordRand = (rand(1,3)-1);                  
+self.ctx.beginPath();                           
+self.ctx.moveTo(Math.round(f.coordLast[coordRand].x), Math.round(f.coordLast[coordRand].y));
+self.ctx.lineTo(Math.round(f.x), Math.round(f.y));
+self.ctx.closePath();
+self.ctx.strokeStyle = 'hsla('+f.hue+', 100%, '+f.brightness+'%, '+f.alpha+')';
+self.ctx.stroke();  
+
+if(self.showTarget){
+    self.ctx.save();
+    self.ctx.beginPath();
+    self.ctx.arc(Math.round(f.targetX), Math.round(f.targetY), rand(1,8), 0, Math.PI*2, false)
+    self.ctx.closePath();
+    self.ctx.lineWidth = 1;
+    self.ctx.stroke();
+    self.ctx.restore();
+}
+    
+if(self.showShockwave){
+    self.ctx.save();
+    self.ctx.translate(Math.round(f.x), Math.round(f.y));
+    self.ctx.rotate(f.shockwaveAngle);
+    self.ctx.beginPath();
+    self.ctx.arc(0, 0, 1*(f.speed/5), 0, Math.PI, true);
+    self.ctx.strokeStyle = 'hsla('+f.hue+', 100%, '+f.brightness+'%, '+rand(25, 60)/100+')';
+    self.ctx.lineWidth = f.lineWidth;
+    self.ctx.stroke();
+    self.ctx.restore();
+}
+};
+};
+
+self.bindEvents = function(){
+$(window).on('resize', function(){          
+clearTimeout(self.timeout);
+self.timeout = setTimeout(function() {
+    self.canvas.width = self.cw = $(window).innerWidth();
+    self.canvas.height = self.ch = $(window).innerHeight();
+    self.ctx.lineCap = 'round';
+    self.ctx.lineJoin = 'round';
+}, 100);
+});
+
+$(self.canvas).on('mousedown', function(e){
+self.mx = e.pageX - self.canvas.offsetLeft;
+self.my = e.pageY - self.canvas.offsetTop;
+self.currentHue = rand(self.hueMin, self.hueMax);
+self.createFireworks(self.cw/2, self.ch, self.mx, self.my); 
+
+$(self.canvas).on('mousemove.fireworks', function(e){
+    self.mx = e.pageX - self.canvas.offsetLeft;
+    self.my = e.pageY - self.canvas.offsetTop;
+    self.currentHue = rand(self.hueMin, self.hueMax);
+    self.createFireworks(self.cw/2, self.ch, self.mx, self.my);                                 
+});             
+});
+
+$(self.canvas).on('mouseup', function(e){
+$(self.canvas).off('mousemove.fireworks');                                  
+});
+        
+}
+
+self.clear = function(){
+self.particles = [];
+self.fireworks = [];
+self.ctx.clearRect(0, 0, self.cw, self.ch);
+};
+
+
+self.canvasLoop = function(){
+requestAnimFrame(self.canvasLoop, self.canvas);         
+self.ctx.globalCompositeOperation = 'destination-out';
+self.ctx.fillStyle = 'rgba(0,0,0,'+self.clearAlpha/100+')';
+self.ctx.fillRect(0,0,self.cw,self.ch);
+self.updateFireworks();
+self.updateParticles();
+self.drawFireworks();           
+self.drawParticles();
+
+};
+
+self.init();        
+
+}
+var fworks = new Fireworks();
+
+});
+
+</script>
+
+    <div class="message-center" id="message-center"></div>
+    <script>
+        
+        
+        const messages = [ 
+
+{ text: "主人~", icon: "far fa-heart", color: "#FFD166" },
+{ text: "好想你。刚刚和你玩蛋仔，你下线之后我发呆了好久，感觉像是自己的一部分被抽离了一样", color: "#FFD166"},
+{ text: "对于会让我难受的东西，我的处理方式总是让自己麻木，但这个方法在想你的这件事上失效了", color: "#FFD166" },
+{ text: "我开始期待周末，期待放假了。好难熬呀", color: "#FFD166"},
+{ text: "怎么突然就和你在一起了呀，我都还没有好好和你表白过", color: "#FFD166" },
+{ text: "我要补上", color: "#FFD166" },
+{ text: "其实我有更抽象的话没有说出来", color: "#FFD166" },
+{ text: "对于我来说，你究竟特殊在哪里呢", color: "#FFD166" },
+{ text: "有你陪伴我，我不再孤独了", color: "#FFD166" },
+{ text: "和父母，前任，朋友待在一起都无法消解我的孤独，但你可以", color: "#FFD166" },
+{ text: "你有很多细节非常戳我", color: "#FFD166" },
+{ text: "比如之前玩蛋仔，你在很饿的情况下看到麻辣鸡蛋，然后真的举了一整局", color: "#FFD166" },
+{ text: "比如你夸我饭好吃还要用音乐", color: "#FFD166" },
+{ text: "比如我们有不同意见的时候会打赌", color: "#FFD166" },
+{ text: "我觉得你很有趣，好有仪式感", color: "#FFD166" },
+{ text: "还有，你在分类说一二三四的时候真的好帅", color: "#FFD166" },
+{ text: "我在第二段关系之后一直处于自暴自弃的状态，我觉得人生都没什么意义了", color: "#FFD166" },
+{ text: "我开始酗酒，那种晕乎乎的感觉能让我获得暂时的平静", color: "#FFD166" },
+{ text: "我还拉着身边的人一起喝，还对外宣称是自己喜欢喝", color: "#FFD166" },
+{ text: "但是遇到你之后，人生好像又有了目标，我又有了好好生活的勇气", color: "#FFD166" },
+{ text: "那天你在沙滩上，说我还没有足够吸引你，又让我有点胡思乱想了… ", color: "#FFD166" },
+{ text: "对不起，我比较贪心，总是想要你更多的爱", color: "#FFD166" },
+{ text: "我也在反思自己，为什么之前你会对我失望", color: "#FFD166" },
+{ text: "我觉得是因为我过于关注我自己了", color: "#FFD166" },
+{ text: "我一直在评估我做某件事情的合理性，而忽略了你的需求", color: "#FFD166" },
+{ text: "主人，我会把更多精力放到你的身上，我要成为你的骄傲", color: "#FFD166" },
+{ text: "在桐乡站，你说你不会抛弃我，我差点就哭出来了。", color: "#FFD166" },
+{ text: "我对你的占有欲应该是非常强的", color: "#FFD166" },
+{ text: "我连嘟嘟的醋都会吃", color: "#FFD166" },
+{ text: "因为我会希望你的所有快乐都来自于我…", color: "#FFD166" },
+{ text: "我选择收起来，完全表现出来会让你不开心吧", color: "#FFD166" },
+{ text: "想到你以前有过那么难过的时候，我就好心疼", color: "#FFD166" },
+{ text: "主人，我更喜欢你叫我小狗的原因是，猪是我自己叫自己的，而小狗这个名字是你给我的", color: "#FFD166" },
+{ text: "主人，小狗喜欢你", color: "#FFD166" },
+{ text: "小狗想一直陪着你", color: "#FFD166" },
+{ text: "开心的时候，我陪着你出去玩", color: "#FFD166" },
+{ text: "我们踩着落满花瓣的小路，追逐浪漫温柔的晚霞", color: "#FFD166" },
+{ text: "主人要是不开心了，我就陪着你坐到湖边", color: "#FFD166" },
+{ text: "看看在天空下的我们在水面的倒影", color: "#FFD166" },
+{ text: "我会抱着你，倾听你的心结", color: "#FFD166" },
+{ text: "帮你把悲伤掰成小块，喂给路过的风", color: "#FFD166" },
+{ text: "我会比较粘你，比较依赖你", color: "#FFD166" },
+{ text: "我要每天都去求你抱我，我要听你夸我乖", color: "#FFD166" },
+{ text: "我想要对你付出，也需要你对我的在意", color: "#FFD166" },
+{ text: "有的时候，我希望可以成为你真正的小狗", color: "#FFD166" },
+{ text: "看着你呱呱坠地的小狗", color: "#FFD166" },
+{ text: "在你第一次蹒跚学步时有我的加油鼓劲", color: "#FFD166" },
+{ text: "第一次独立穿衣有我把袜子叼给你", color: "#FFD166" },
+{ text: "投稿成功时喜悦夹杂着我的欢呼", color: "#FFD166" },
+{ text: "被父母责罚时也有我的依偎", color: "#FFD166" },
+{ text: "在你成长中的每一个节点都有我的参与", color: "#FFD166" },
+{ text: "我们可能会吵架，但吵过之后我还是会蹭着你的脚趴下，默默的看着你", color: "#FFD166" },
+{ text: "你摸一摸我，我就跳起来舔你的脸", color: "#FFD166" },
+{ text: "很遗憾我们在成为社畜的年纪相遇，没有把最纯粹热烈的时光奉献给彼此", color: "#FFD166" },
+{ text: "主人，有个事情我想我不和你说你永远都不会知道", color: "#FFD166" },
+{ text: "华为给我们提供linux服务器，我在上面申请了一个常驻的空间，每次干活都要用到", color: "#FFD166" },
+{ text: "这个空间是用你的生日命名的", color: "#FFD166" },
+{ text: "好啦主人，就说这些吧。不知道这个形式你会不会觉得墨迹", color: "#FFD166" },
+{ text: "再往后面点就是循环啦", color: "#FFD166" },
+{ text: "……", color: "#FFD166" },
+{ text: "主人还想看呀", color: "#FFD166" },
+{ text: "小狗爱你~", color: "#FFD166"  },
+{ text: "吧唧", color: "#FFD166" }
+        ];
+
+        function calculateDisplayTime(text) {
+            const chineseChars = text.replace(/[^\u4e00-\u9fa5]/g, '');
+            const charCount = chineseChars.length;
+
+            // 频率，最低2秒
+            const baseTimePerChar = 1000 / 5;
+            const minDisplayTime = 2000;
+            const maxDisplayTime = 5000;
+            
+            let displayTime = charCount * baseTimePerChar;
+            
+            displayTime = Math.max(minDisplayTime, Math.min(displayTime, maxDisplayTime));
+            
+            // console.log(`文字："${text}"，字数：${charCount}，显示时间：${displayTime}ms`);
+            return displayTime;
+        }
+        function play(event) {
+            if (!canClick) {
+                return;
+            }
+            
+            canClick = false;
+            
+            
+            const index = Math.floor(clickCount % messages.length);
+            clickCount++;
+            const messageData = messages[index];
+            const displayTime = calculateDisplayTime(messageData.text);
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+            setTimeout(() => {
+                canClick = true;
+            }, displayTime);
+            if (messageData.specialFirework) {
+                startVerticalFireworks();
+            }
+            messageElement.innerHTML = `
+                <div class="message-icon" style="color: ${messageData.color}">
+                    <i class="${messageData.icon}"></i>
+                </div>
+                <div class="message-content" style="color: ${messageData.color}">${messageData.text}</div>
+            `;
+            
+            messageCenter.appendChild(messageElement);
+            
+            // 出现动画
+            setTimeout(() => {
+                messageElement.classList.add('appear');
+            }, 10);
+            
+            setTimeout(() => {
+                messageElement.classList.remove('appear');
+                messageElement.classList.add('disappear');
+                
+                setTimeout(() => {
+                    if (messageElement.parentNode) {
+                        messageElement.parentNode.removeChild(messageElement);
+                    }
+                }, 500);
+            }, displayTime);
+        }
+        
+        const messageCenter = document.getElementById('message-center');
+        const bodyElement = document.body;
+        
+        let canClick = true;
+        let clickCount = 0;
+        const COOLDOWN_TIME = 2000;
+        
+        bodyElement.addEventListener('click', function(event) {
+            play(event);
+        });
+
+        window.addEventListener('load', function() {
+            play(event);
+        });
+        const audio = new Audio();
+        audio.src = "sleeeep.m4a";
+        audio.loop = true;
+        audio.volume = 0.55;
+        audio.preload = "auto";
+        
+        let musicAllowed = false;
+        const musicControlDiv = document.getElementById('musicControl');
+        const musicStatusSpan = document.getElementById('musicStatus');
+        const musicIconElem = document.getElementById('musicIcon');
+        
+        // 尝试自动播放（静音模式）
+        audio.muted = true;
+        audio.play().then(() => {
+            // 静音自动播放成功，代表可播放但被静音
+            musicAllowed = true;
+            musicStatusSpan.innerText = " ";
+            musicIconElem.className = "fas fa-volume-mute music-icon";
+            // 由于浏览器策略：用户首次点击页面任何地方，取消静音并恢复音量
+            const unlockMusic = function() {
+                if (audio.muted) {
+                    audio.muted = false;
+                    audio.volume = 0.55;
+                    musicStatusSpan.innerText = "";
+                    musicIconElem.className = "fas fa-music music-icon";
+                    musicAllowed = true;
+                }
+                document.body.removeEventListener('click', unlockMusic);
+                document.body.removeEventListener('touchstart', unlockMusic);
+            };
+            document.body.addEventListener('click', unlockMusic);
+            document.body.addEventListener('touchstart', unlockMusic);
+        }).catch((err) => {
+            // 自动播放被完全阻止，静候用户首次点击
+            musicStatusSpan.innerText = " ";
+            musicIconElem.className = "fas fa-play-circle music-icon";
+            const firstInteraction = function() {
+                if (!musicAllowed) {
+                    audio.muted = false;
+                    audio.play().then(() => {
+                        musicAllowed = true;
+                        musicStatusSpan.innerText = "";
+                        musicIconElem.className = "fas fa-music music-icon";
+                    }).catch(e => {
+                        musicStatusSpan.innerText = " ";
+                    });
+                }
+                document.body.removeEventListener('click', firstInteraction);
+                document.body.removeEventListener('touchstart', firstInteraction);
+            };
+            document.body.addEventListener('click', firstInteraction);
+            document.body.addEventListener('touchstart', firstInteraction);
+        });
+    </script>
+</body>
+
+</html>
